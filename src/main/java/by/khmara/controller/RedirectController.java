@@ -1,5 +1,6 @@
 package by.khmara.controller;
 
+import by.khmara.entity.Redirect;
 import by.khmara.service.UrlService;
 import io.micronaut.http.*;
 import io.micronaut.http.annotation.Controller;
@@ -10,6 +11,7 @@ import jakarta.inject.Inject;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 public class RedirectController {
@@ -19,12 +21,10 @@ public class RedirectController {
 
     @Get("/{alias}")
     public HttpResponse<?> redirect(@PathVariable String alias, HttpHeaders headers) throws URISyntaxException {
-        Map<String, String> urlMap = urlService.urlMapping();
-        URI uri = new URI("");
+        Optional<Redirect> redirect = urlService.getUrl(alias);
 
-        if (urlMap.containsKey(alias)) {
-            uri = new URI(urlMap.get(alias));
-            return HttpResponse.redirect(uri);
+        if (redirect.isPresent()) {
+            return HttpResponse.redirect(new URI(redirect.get().getUrl()));
         }
 
         return HttpResponse.notFound();

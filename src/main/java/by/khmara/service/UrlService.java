@@ -7,6 +7,7 @@ import jakarta.inject.Inject;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Bean
@@ -14,9 +15,7 @@ public class UrlService {
     @Inject
     private UrlRepository urlRepository;
 
-    public Map<String, String> urlMapping() {
-        List<Redirect> redirects = urlRepository.findAll();
-
-        return redirects.stream().collect(Collectors.toMap(e -> e.getAlias(), e-> e.getUrl()));
+    public Optional<Redirect> getUrl(String alias) {
+        return urlRepository.findByAlias(alias);
     }
 }
